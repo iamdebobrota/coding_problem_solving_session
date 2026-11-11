@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+    <h1>Generate Interview Questions</h1>
+    <form id="questionForm">
+        <input type="text" id="topic" placeholder="Enter topic">
+        <select id="difficulty">
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+        </select>
+        <div id="validationMsg" class="validationMsg"></div>
+        <button type="submit" id="generateBtn">Generate Questions</button>
+    </form>
+    <div id="loading" style="display: none;">Generating questions...</div>
+    <div id="error" style="display: none;"></div>
+
+    <div id="questionsContainer" class="questions-container"></div>
+</div>
+<script>
+
+const form = document.getElementById("questionForm");
+form.addEventListener("submit", generateQuestions)
+
+
+async function generateQuestions(event) {
+    event.prevetDefault();
+    const topic = document.getElementById("topic").value.trim();
+    const difficulty = document.getElementById("difficulty").value;
+
+    const btn = document.getElementById("generateBtn");
+    const loading = document.getElementById("loading");
+    const errorDiv = document.getElementById("error");
+    const container = document.getElementById("questionsContainer");
+    const validationMsg = document.getElementById("validationMsg");
+
+    // reset
+    validationMsg.textContent = "";
+    errorDiv.style.display = "none";
+    container.innerHTML = "";
+    btn.disabled = true;
+    loading.style.display = "block";
+
+    // validate inputs
+    if (!topic) {
+        validationMsg.textContent = "Topic is required";
+        validationMsg.style.color = "red";
+        return;
+    }
+
+    // loading state
+    btn.disabled = true;
+    loading.style.display = "block";
+
+    try {
+        const res = await fetch("/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ topic, difficulty }),
+        })
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.details || "Failed to generate questions");
+        }
+        const data = await res.json();
+        if(!data.questions || !Array.isArray(data.questions)){
+            throw new Error("Invalid response format")
+        }
+
+        // render the questions card
+        data.questions.forEach((q, i) => {
+            const card = document.createElement("div");
+            card.className = "question-card";
+            card.innerHTML=`
+                <h3>Question ${i + 1} </h3>
+                <p>${q.question}</p>
+                <span class="type-badge ${q.type}">Type: ${q.type.charAt(0).toUpperCase() + q.type.slice(1)}</span>
+            `;
+            container.appendChild(card);
+        })
+
+        // add the genewrate another set button
+        const againBtn = document.createElement("button");
+        againBtn.textContent = "Generate Another set";
+        againBtn.onclick = generateQuestions;
+        container.appendChild(againBtn);
+       
+    } catch(err){
+        errorDiv.textContent = err.message;
+        errorDiv.style.display = "block"
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "Generate question";
+        loading.style.display = "none"
+    }
+    }
+
+</script>
+</body>
+</html>

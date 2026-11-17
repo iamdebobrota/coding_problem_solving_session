@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusBite - Campus food, made easy</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav id="navbar"></nav>
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <div class="hero-copy">
+                    <p class="eyebrow">Campus food, made easy</p>
+                    <h1>Good food is just a few clicks away.</h1>
+                    <p class="hero-text">Order your campus favourites from trusted restaurants and get back to what matters.</p>
+                    <a class="btn hero-btn" href="#restaurants">Explore restaurants <span aria-hidden="true">→</span></a>
+                </div>
+                <div class="hero-art" aria-hidden="true">
+                    <span class="hero-emoji">🍱</span>
+                    <span class="floating-emoji emoji-one">🥤</span>
+                    <span class="floating-emoji emoji-two">🍕</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="container restaurant-section" id="restaurants">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">What's on the menu</p>
+                    <h2>Choose your restaurant</h2>
+                </div>
+                <p class="muted">Fresh options around campus</p>
+            </div>
+            <div class="msg"></div>
+            <div id="restaurant-list" class="grid"></div>
+        </section>
+    </main>
+    <script type="module" src="js/pages/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+const storage_key = "campusbite-data";
+
+function minutesAgo(min) {
+  return min;
+}
+function img(text) {
+  `https://placehold.co/600x400?text${encodeURIComponent(text)}`;
+}
+function line(id, span, price, qnty) {
+  return { id, span, price, qnty };
+}
+
+const DUMMY_DATA = {
+  // Owners and delivery partners are "seeded"; only customers can register.
+  users: [
+    {
+      id: 1,
+      email: "customer@campusbite.com",
+      password: "password123",
+      full_name: "Asha Customer",
+      role: "customer",
+      restaurant_id: null,
+    },
+    {
+      id: 2,
+      email: "owner1@campusbite.com",
+      password: "password123",
+      full_name: "Ravi Owner",
+      role: "owner",
+      restaurant_id: 1,
+    },
+    {
+      id: 3,
+      email: "owner2@campusbite.com",
+      password: "password123",
+      full_name: "Meera Owner",
+      role: "owner",
+      restaurant_id: 2,
+    },
+    {
+      id: 4,
+      email: "delivery1@campusbite.com",
+      password: "password123",
+      full_name: "Kiran Delivery",
+      role: "delivery",
+      restaurant_id: null,
+    },
+    {
+      id: 5,
+      email: "delivery2@campusbite.com",
+      password: "password123",
+      full_name: "Sunil Delivery",
+      role: "delivery",
+      restaurant_id: null,
+    },
+  ],
+
+  restaurants: [
+    {
+      id: 1,
+      name: "Dosa Hut",
+      address_text: "Block A, Campus Food Court",
+      is_active: true,
+      owner_user_id: 2,
+    },
+    {
+      id: 2,
+      name: "Pizza Point",
+      address_text: "Near Main Gate",
+      is_active: true,
+      owner_user_id: 3,
+    },
+  ],
+
+  menuItems: [
+    {
+      id: 11,
+      restaurant_id: 1,
+      name: "Masala Dosa",
+      description: "Crispy dosa with potato filling",
+      price_inr: 80,
+      is_available: true,
+      image_url: img("Masala Dosa"),
+    },
+    {
+      id: 12,
+      restaurant_id: 1,
+      name: "Idli (2 pcs)",
+      description: "Soft idli with chutney and sambar",
+      price_inr: 40,
+      is_available: true,
+      image_url: img("Idli"),
+    },
+    {
+      id: 13,
+      restaurant_id: 1,
+      name: "Vada",
+      description: "Crispy medu vada",
+      price_inr: 35,
+      is_available: true,
+      image_url: img("Vada"),
+    },
+    {
+      id: 14,
+      restaurant_id: 1,
+      name: "Filter Coffee",
+      description: "Strong South Indian coffee",
+      price_inr: 25,
+      is_available: true,
+      image_url: img("Filter Coffee"),
+    },
+    {
+      id: 15,
+      restaurant_id: 1,
+      name: "Rava Dosa",
+      description: "Thin semolina dosa",
+      price_inr: 90,
+      is_available: false,
+      image_url: img("Rava Dosa"),
+    },
+    {
+      id: 21,
+      restaurant_id: 2,
+      name: "Margherita Pizza",
+      description: "Cheese and tomato",
+      price_inr: 199,
+      is_available: true,
+      image_url: img("Margherita"),
+    },
+    {
+      id: 22,
+      restaurant_id: 2,
+      name: "Farmhouse Pizza",
+      description: "Loaded with vegetables",
+      price_inr: 299,
+      is_available: true,
+      image_url: img("Farmhouse"),
+    },
+    {
+      id: 23,
+      restaurant_id: 2,
+      name: "Garlic Bread",
+      description: "With cheese dip",
+      price_inr: 119,
+      is_available: true,
+      image_url: img("Garlic Bread"),
+    },
+    {
+      id: 24,
+      restaurant_id: 2,
+      name: "Cold Coffee",
+      description: "Chilled and creamy",
+      price_inr: 99,
+      is_available: true,
+      image_url: img("Cold Coffee"),
+    },
+    {
+      id: 25,
+      restaurant_id: 2,
+      name: "Paneer Pizza",
+      description: "Spicy paneer tikka",
+      price_inr: 329,
+      is_available: false,
+      image_url: img("Paneer Pizza"),
+    },
+  ],
+
+  orders: [
+    {
+      id: 1,
+      customer_id: 1,
+      customer_name: "Asha Customer",
+      restaurant_id: 1,
+      restaurant_name: "Dosa Hut",
+      delivery_partner_id: 4,
+      delivery_partner_name: "Kiran Delivery",
+      status: "DELIVERED",
+      delivery_address_text: "Hostel 3, Room 204",
+      notes: null,
+      subtotal_inr: 185,
+      payment_status: "mock_paid",
+      return_status: "none",
+      return_reason: null,
+      return_admin_note: null,
+      placed_at: minutesAgo(1500),
+      updated_at: minutesAgo(1440),
+      items: [line(11, "Masala Dosa", 80, 2), line(14, "Filter Coffee", 25, 1)],
+      review: null,
+    },
+    {
+      id: 2,
+      customer_id: 1,
+      customer_name: "Asha Customer",
+      restaurant_id: 1,
+      restaurant_name: "Dosa Hut",
+      delivery_partner_id: null,
+      delivery_partner_name: null,
+      status: "READY",
+      delivery_address_text: "Hostel 3, Room 204",
+      notes: "Extra chutney please",
+      subtotal_inr: 120,
+      payment_status: "mock_paid",
+      return_status: "none",
+      return_reason: null,
+      return_admin_note: null,
+      placed_at: minutesAgo(40),
+      updated_at: minutesAgo(10),
+      items: [line(12, "Idli (2 pcs)", 40, 3)],
+      review: null,
+    },
+    {
+      // Not updated for 20 minutes -> shows up in the owner's reminders
+      id: 3,
+      customer_id: 1,
+      customer_name: "Asha Customer",
+      restaurant_id: 1,
+      restaurant_name: "Dosa Hut",
+      delivery_partner_id: null,
+      delivery_partner_name: null,
+      status: "PLACED",
+      delivery_address_text: "Library, 2nd floor",
+      notes: null,
+      subtotal_inr: 70,
+      payment_status: "mock_paid",
+      return_status: "none",
+      return_reason: null,
+      return_admin_note: null,
+      placed_at: minutesAgo(20),
+      updated_at: minutesAgo(20),
+      items: [line(13, "Vada", 35, 2)],
+      review: null,
+    },
+    {
+      id: 4,
+      customer_id: 1,
+      customer_name: "Asha Customer",
+      restaurant_id: 2,
+      restaurant_name: "Pizza Point",
+      delivery_partner_id: 5,
+      delivery_partner_name: "Sunil Delivery",
+      status: "DELIVERED",
+      delivery_address_text: "Hostel 3, Room 204",
+      notes: null,
+      subtotal_inr: 318,
+      payment_status: "mock_paid",
+      return_status: "requested",
+      return_reason: "Pizza was cold",
+      return_admin_note: null,
+      placed_at: minutesAgo(3000),
+      updated_at: minutesAgo(2900),
+      items: [
+        line(21, "Margherita Pizza", 199, 1),
+        line(23, "Garlic Bread", 119, 1),
+      ],
+      review: { rating: 3, comment: "Okay taste" },
+    },
+  ],
+};
+
+const saved = localStorage.getItem(storage_key);
+export const data = saved ? JSON.parse(saved) : DUMMY_DATA;
+
+export function saveData() {
+  localStorage.setItem(storage_key, JSON.stringify(data));
+}

@@ -96,8 +96,6 @@ if (!restaurant) {
         if (action === "accept") setOrderStatus(order, "ACCEPTED");
         if (action === "preparing") setOrderStatus(order, "PREPARING");
         if (action === "ready") setOrderStatus(order, "READY");
-        if (action === "out-for-delivery") setOrderStatus(order, "OUT_FOR_DELIVERY");
-        if (action === "delivered") setOrderStatus(order, "DELIVERED");
         if (action === "cancel") setOrderStatus(order, "CANCELLED");
         if (action === "approve-refund" || action === "reject-refund") {
           order.return_status = action === "approve-refund" ? "approved" : "rejected";
@@ -117,6 +115,7 @@ if (!restaurant) {
         if (!order || !partner) return;
         order.delivery_partner_id = partner.id;
         order.delivery_partner_name = partner.full_name;
+        order.status = "ASSIGNED";
         order.updated_at = Date.now();
         saveData();
         renderDashboard();
@@ -131,8 +130,7 @@ if (!restaurant) {
     if (order.status === "READY" && !order.delivery_partner_id) {
       return `<form class="assign-delivery" data-order-id="${order.id}"><select name="partner" aria-label="Assign delivery partner" required><option value="">Assign delivery partner</option>${partners.map((partner) => `<option value="${partner.id}">${escapseHtml(partner.full_name)}</option>`).join("")}</select><button class="btn btn-small" type="submit">Assign</button></form><button class="text-button danger-button owner-action" data-action="cancel" data-order-id="${order.id}">Cancel</button>`;
     }
-    if (order.status === "READY") return `<button class="btn btn-small owner-action" data-action="out-for-delivery" data-order-id="${order.id}">Send for delivery</button>`;
-    if (order.status === "OUT_FOR_DELIVERY") return `<button class="btn btn-small owner-action" data-action="delivered" data-order-id="${order.id}">Mark delivered</button>`;
+    if (order.status === "READY") return order.delivery_partner_name ? `<span class="muted">Assigned to ${escapseHtml(order.delivery_partner_name)}</span>` : "";
     return order.delivery_partner_name ? `<span class="muted">Assigned to ${escapseHtml(order.delivery_partner_name)}</span>` : "";
   }
 
